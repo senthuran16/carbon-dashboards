@@ -68,10 +68,12 @@ public class WidgetMetadataProviderImpl implements WidgetMetadataProvider {
         try {
             if (dataSourceService != null && configProvider != null) {
                 this.widgetMetadataDao = WidgetMetadataDaoFactory.createDao(dataSourceService, configProvider);
+                this.widgetMetadataDao.initWidgetTable();
                 this.isDaoInitialized = true;
             }
         } catch (DashboardException e) {
             //ignore as its required to start with default widget extension loading.
+            LOGGER.debug("Error in activating widget DAO {}", e.getMessage());
         }
         LOGGER.debug("{} activated.", this.getClass().getName());
     }
@@ -90,7 +92,9 @@ public class WidgetMetadataProviderImpl implements WidgetMetadataProvider {
             WidgetConfigs widgetConfigs = new WidgetConfigs();
             widgetConfigs.setChartConfig(generatedWidgetConfigs.getChartConfig());
             widgetConfigs.setProviderConfig(generatedWidgetConfigs.getProviderConfig());
+            widgetConfigs.setPubsub(generatedWidgetConfigs.getPubsub());
             widgetConfigs.setGenerated(true);
+            widgetMetaInfo.setVersion(generatedWidgetConfigs.getVersion());
             widgetMetaInfo.setId(generatedWidgetConfigs.getId());
             widgetMetaInfo.setName(generatedWidgetConfigs.getName());
             widgetMetaInfo.setConfigs(widgetConfigs);
@@ -130,9 +134,9 @@ public class WidgetMetadataProviderImpl implements WidgetMetadataProvider {
                 WidgetConfigs widgetConfigs = new WidgetConfigs();
                 widgetMetaInfo.setId(generatedWidgetConfigs.getId());
                 widgetMetaInfo.setName(generatedWidgetConfigs.getName());
-                widgetConfigs.setChartConfig(generatedWidgetConfigs.getChartConfig());
-                widgetConfigs.setProviderConfig(generatedWidgetConfigs.getProviderConfig());
+                widgetConfigs.setPubsub(generatedWidgetConfigs.getPubsub());
                 widgetConfigs.setGenerated(true);
+                widgetMetaInfo.setVersion(generatedWidgetConfigs.getVersion());
                 widgetMetaInfo.setConfigs(widgetConfigs);
                 widgetMetaInfoSet.add(widgetMetaInfo);
             }

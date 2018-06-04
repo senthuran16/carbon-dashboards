@@ -16,24 +16,13 @@
  * under the License.
  */
 
-import React from 'react';
-import Widget from '@wso2-dashboards/widget';
-import WidgetChannelManager from '../../dashboards-web-component/src/utils/dashboard-channel/WidgetChannelManager';
-
-let widgetChannelManager = null;
-
-export default class ExtendedWidget extends Widget {
-
-    constructor(props) {
-        super(props);
-    }
-
-    getWidgetChannelManager() {
-        if(!widgetChannelManager) {
-            widgetChannelManager=new WidgetChannelManager();
-        }
-
-        return widgetChannelManager;
-    }
-
+.dashboard-view-container {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 64px);
+    max-height: 100vh;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    overflow: hidden !important;
 }

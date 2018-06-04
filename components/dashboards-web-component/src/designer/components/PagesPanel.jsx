@@ -31,6 +31,9 @@ import {FormattedMessage} from 'react-intl';
 
 let _pages = [];
 
+/**
+ * @deprecated
+ */
 class PagesPanel extends Component {
     constructor(props) {
         super(props);
@@ -146,7 +149,7 @@ class PagesPanel extends Component {
         });
         this.savePages(this.props.dashboard.pages);
         // navigate to newly added page
-        this.props.history.push(window.contextPath + '/designer/' + this.props.dashboard.url + '/' + id)
+        this.props.history.push(`/designer/${this.props.dashboard.url}/${id}`)
     }
 
     /**
@@ -161,7 +164,7 @@ class PagesPanel extends Component {
         this.savePages(this.props.dashboard.pages);
         // If the page id has been modified, need to redirect the user to the page with the new url.
         if (id != page.id) {
-            this.props.history.push(window.contextPath + '/designer/' + this.props.dashboard.url + '/' + page.id);
+            this.props.history.push(`/designer/${this.props.dashboard.url}/${page.id}`);
         }
     }
 
@@ -183,7 +186,7 @@ class PagesPanel extends Component {
         this.deletePageRecursively(this.props.dashboard.pages, id);
         this.savePages(this.props.dashboard.pages);
         // navigate to home page
-        this.props.history.push(window.contextPath + '/designer/' + this.props.dashboard.url);
+        this.props.history.push(`/designer/${this.props.dashboard.url}`);
     }
 
     /**

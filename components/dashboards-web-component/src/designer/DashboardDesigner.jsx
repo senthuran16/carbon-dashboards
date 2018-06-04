@@ -26,6 +26,7 @@ import {dashboardLayout, widgetLoadingComponent} from '../utils/WidgetLoadingCom
 import DashboardRenderingComponent from '../utils/DashboardRenderingComponent';
 import DashboardUtils from '../utils/DashboardUtils';
 import Error403 from '../error-pages/Error403';
+import Error404 from '../error-pages/Error404';
 import WidgetsList from './components/WidgetsList';
 import PagesPanel from './components/PagesPanel';
 import WidgetConfigurationPanel from './components/WidgetConfigurationPanel';
@@ -99,6 +100,9 @@ const sidebarPanels = {
     WIDGETS: 'WIDGETS'
 };
 
+/**
+ * @deprecated
+ */
 export default class DashboardDesigner extends Component {
     constructor(props) {
         super(props);
@@ -154,7 +158,7 @@ export default class DashboardDesigner extends Component {
     render() {
         if (!this.state.isSessionValid) {
             return (
-                <Redirect to={{pathname: `${window.contextPath}/logout`}}/>
+                <Redirect to={{pathname: '/logout'}}/>
             );
         }
         DashboardDesigner.loadTheme();
@@ -162,6 +166,8 @@ export default class DashboardDesigner extends Component {
             this.state.dashboard)[0];
         if (!this.state.hasPermission) {
             return <Error403/>;
+        } else if (!this.state.hasDashboard) {
+            return <Error404/>;
         }
         return (
             <MuiThemeProvider muiTheme={muiTheme}>
@@ -173,7 +179,7 @@ export default class DashboardDesigner extends Component {
 
                     {/* Portal navigation bar */}
                     <div className="navigation-bar">
-                        <Link to={window.contextPath + '/'}>
+                        <Link to={'/'}>
                             <RaisedButton label={<FormattedMessage id="back.button" defaultMessage="Back"/>}
                                           icon={<BackIcon/>} style={{'margin-right': '12px'}}
                                           backgroundColor="rgb(13, 31, 39)"/>
@@ -202,7 +208,8 @@ export default class DashboardDesigner extends Component {
                                     top: '106px',
                                     height: 'auto',
                                     bottom: '0',
-                                    backgroundColor: '#24353f'
+                                    backgroundColor: '#24353f',
+                                    overflowX: 'hidden'
                                 }}>
                             <PagesPanel dashboard={this.state.dashboard}
                                         onDashboardUpdated={(d) => this.updateDashboard(d)}
@@ -309,7 +316,7 @@ export default class DashboardDesigner extends Component {
             let newPage = DashboardUtils.getPage(dashboard, pageId);
             DashboardUtils.searchAndReplaceOptions(newPage, optionsMap);
             this.cleanDashboardJSON(dashboard.pages);
-            new DashboardAPI().updateDashboardByID(this.state.dashboard.id, dashboard);
+            new DashboardAPI().updateDashboardByID(this.state.dashboardId, dashboard);
             let newState = this.state;
             newState.widgetConfigPanelOpen = false;
             this.setState(newState);
@@ -488,7 +495,7 @@ export default class DashboardDesigner extends Component {
 
     pageNavigated(id, url) {
         this.setState({
-            redirectUrl: window.contextPath + '/designer/' + this.state.dashboardId + '/' + url,
+            redirectUrl: `/designer/${this.state.dashboardId}/${url}`,
             redirect: true
         });
     }
